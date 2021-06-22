@@ -22,7 +22,18 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, DynamicFragmentActivity::class.java))
         }
 
+        binding.implicitIntentButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            startActivity(intent)
+        }
 
+        binding.fragmentLifecycleButton.setOnClickListener {
+            val fragment = FragmentLifeCycle()
+            val trasaction = supportFragmentManager.beginTransaction()
+                trasaction.add(R.id.fragment, fragment)
+                trasaction.addToBackStack(null)
+                trasaction.commit()
+        }
     }
 }
 

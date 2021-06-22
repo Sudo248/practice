@@ -4,24 +4,23 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 
-class StaticFragmentActivity : AppCompatActivity() {
-
+class StaticFragmentActivity : AppCompatActivity(), Fragment1.ParentActivity<StaticFragmentActivity> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_static_fragment)
     }
 
-    val sendBundleToFragment = { bundle: Bundle ->
-        val fragment = Fragment2()
-        fragment.arguments = bundle
-//        val fragmentTransAction = supportFragmentManager.beginTransaction()
-//        fragmentTransAction.replace(R.id.static_fragment_2, fragment)
-//        fragmentTransAction.commit()
+    override fun sendBundleToFragment(bundle: Bundle) {
+        val fragment2 = Fragment2()
+        fragment2.arguments = bundle
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_static_2, fragment2)
+            .commit()
     }
 
-    val sendBundleToActivity = { bundle: Bundle ->
-        val intent = Intent(this, MyActivity1::class.java)
+    override fun sendBundleToActivity(bundle: Bundle) {
+        val intent = Intent(this, MyActivity2::class.java)
         intent.putExtras(bundle)
         startActivity(intent)
     }

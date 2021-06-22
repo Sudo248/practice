@@ -12,14 +12,14 @@ import com.duonglh.fragmentpractice.databinding.InformationPersonBinding
 
 class MyActivity1 : AppCompatActivity() {
     private lateinit var binding: ActivityMy1Binding
-    private lateinit var bundle: Bundle
+    private var bundle: Bundle? = null
     private lateinit var listPerson: MutableList<Person>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMy1Binding.inflate(layoutInflater)
         setContentView(binding.root)
         intent?.let {
-            bundle = intent.getBundleExtra("bundle")!!
+            bundle = intent.extras
         }
         listPerson = mutableListOf(
             Person("Minh", 20),
@@ -32,7 +32,9 @@ class MyActivity1 : AppCompatActivity() {
             Person("Truong",20),
             Person("Long",20)
         )
-        listPerson.add(bundle.getSerializable("person")as Person)
+        bundle?.let{
+            listPerson.add(bundle?.getSerializable("person")as Person)
+        }
         show()
     }
 
@@ -40,7 +42,6 @@ class MyActivity1 : AppCompatActivity() {
         val listViewAdapter = ListViewAdapter(applicationContext)
         listViewAdapter.listData = listPerson
         binding.listItem.adapter = listViewAdapter
-
     }
     class ListViewAdapter(val context: Context) : BaseAdapter(){
         var listData = listOf<Person>()
@@ -62,10 +63,13 @@ class MyActivity1 : AppCompatActivity() {
                 binding.root.tag = binding
             }
             else binding = convertView.tag as InformationPersonBinding
+
             binding.nameText.text = listData[position].name
             binding.ageText.text = listData[position].age.toString()
+
             return binding.root
         }
+
 
     }
 }

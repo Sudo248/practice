@@ -2,6 +2,7 @@ package com.duonglh.fragmentpractice
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +31,7 @@ class Fragment2 : Fragment() {
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
-            bundle = it.getBundle("bundle")
+            bundle = it
         }
     }
 
@@ -46,8 +47,11 @@ class Fragment2 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = Fragment2Binding.bind(view)
-        val person = bundle?.get("person") as Person
-        binding.informationText.text = "Hello ${person.name} this is your information:\n name: ${person.name}\n age: $person.age "
+        bundle?.let{
+            val person = bundle!!.get("person") as Person
+            binding.informationText.text = "Hello ${person.name} this is your information:\n name: ${person.name}\n age: ${person.age} "
+        }
+        Log.e("duong",bundle.toString())
     }
 
     companion object {

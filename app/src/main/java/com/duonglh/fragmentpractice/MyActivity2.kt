@@ -1,22 +1,25 @@
 package com.duonglh.fragmentpractice
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.duonglh.fragmentpractice.databinding.ActivityMy2Binding
 import com.duonglh.fragmentpractice.databinding.InformationPersonBinding
 
 class MyActivity2 : AppCompatActivity() {
     lateinit var binding: ActivityMy2Binding
-    lateinit var bundle: Bundle
+    private var bundle: Bundle? = null
     private lateinit var listPerson: MutableList<Person>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMy2Binding.inflate(layoutInflater)
         setContentView(binding.root)
         intent?.let{
-            bundle = intent.getBundleExtra("bundle")!!
+            bundle = intent.extras
         }
         listPerson = mutableListOf(
             Person("Minh", 20),
@@ -29,9 +32,27 @@ class MyActivity2 : AppCompatActivity() {
             Person("Truong",20),
             Person("Long",20)
         )
-        listPerson.add(bundle.getSerializable("person")as Person)
+        bundle?.let{
+            listPerson.add(bundle?.getSerializable("person")as Person)
+        }
 
+        show()
     }
+
+    fun show(){
+        val recyclerAdapter = RecyclerAdapter()
+        recyclerAdapter.listData = listPerson
+        val choice = 2
+        binding.recyclerView.layoutManager = when(choice){
+            1 ->  LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            2 ->  LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            3 -> GridLayoutManager(this, 3)
+            else -> GridLayoutManager(this, 5,GridLayoutManager.VERTICAL,false)
+        }
+
+        binding.recyclerView.adapter = recyclerAdapter
+    }
+
     class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
         var listData = listOf<Person>()
@@ -48,17 +69,14 @@ class MyActivity2 : AppCompatActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            TODO("Not yet implemented")
-
+            val binding = InformationPersonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return ViewHolder(binding)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            TODO("Not yet implemented")
             holder.bin(listData[position])
         }
 
-        override fun getItemCount(): Int {
-            TODO("Not yet implemented")
-        }
+        override fun getItemCount(): Int = listData.size
     }
 }
